@@ -14,12 +14,7 @@ Aplicación de escritorio para gestión médica con sistema de autenticación y 
    git clone https://github.com/tu-usuario/Nomedis_Desktop.git  
    cd Nomedis_Desktop
    ```
-   
-2. Instalar dependencias:
-  ```bash
-   pip install -r requirements.txt  
-   ```
-3. Ejecucion:
+2. Ejecucion:
    ```bash
    python3 user.py
    ```
