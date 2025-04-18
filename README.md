@@ -1,6 +1,6 @@
 # Nomedis_Desktop  
 
-![Logo de Nomedis](imagenes/logo.png)  
+![Logo de Nomedis](Imagenes/logo.png)  
 
 Aplicación de escritorio para gestión médica con sistema de autenticación y agenda de citas.  
 
