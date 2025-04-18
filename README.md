@@ -15,7 +15,7 @@ Aplicación de escritorio para gestión médica con sistema de autenticación y 
    cd Nomedis_Desktop
    ```
    
-2.Instalar dependencias:
+2. Instalar dependencias:
   ```bash
 
 pip install -r requirements.txt  
