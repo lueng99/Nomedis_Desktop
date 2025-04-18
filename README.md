@@ -35,7 +35,7 @@ pip install -r requirements.txt
     Interfaz gráfica intuitiva
 
     Menú de acceso rápido
-##🏥 Módulo de Citas Médicas
+## 🏥 Módulo de Citas Médicas
 📅 Agendamiento
 
     Programación con hasta 2 años de antelación
