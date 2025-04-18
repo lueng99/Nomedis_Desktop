@@ -25,7 +25,7 @@ pip install -r requirements.txt
    ```bash
    python3 user.py
    ```
-##🖥️ Funcionalidades principales
+## 🖥️ Funcionalidades principales
 🔒 Inicio de sesión
 
     Autenticación segura de usuarios
