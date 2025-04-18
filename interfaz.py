@@ -69,7 +69,7 @@ def is_point_inside_rect(x, y, rect):
 
 def open_firefox_gmail():
     try:
-        subprocess.Popen(["firefox", "https://mail.google.com"])
+        subprocess.Popen(["firefox", "google.com"])
     except FileNotFoundError:
         print("No se encontró Firefox. Por favor instálalo.")
 
