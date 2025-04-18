@@ -20,7 +20,7 @@ Aplicación de escritorio para gestión médica con sistema de autenticación y 
 
    pip install -r requirements.txt  
 
-```
+   ```
 3. Ejecucion:
    ```bash
    python3 user.py
