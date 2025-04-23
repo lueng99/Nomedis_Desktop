@@ -16,21 +16,17 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = f'{window_x},{window_y}'
 screen = pygame.display.set_mode(screen_size, pygame.NOFRAME)
 pygame.display.set_caption("App Proporcional")
 
-# Rutas absolutas
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-IMAGES_PATH = os.path.join(BASE_DIR, "Imagenes")
-MEDICAL_APP_PATH = os.path.join(BASE_DIR, "MedicalAppointments")
-USERS_SCRIPT_PATH = os.path.join(BASE_DIR, "users.py")
+ruta_imagenes = os.path.join(os.path.dirname(__file__), "Imagenes")
 
 try:
-    background = pygame.image.load(os.path.join(IMAGES_PATH, "MenuNomedis.jpg"))
+    background = pygame.image.load(os.path.join(ruta_imagenes, "MenuNomedis.jpg"))
     background = pygame.transform.scale(background, screen_size)
-    power_image = pygame.image.load(os.path.join(IMAGES_PATH, "Power.png"))
-    red_image = pygame.image.load(os.path.join(IMAGES_PATH, "Red.png"))
-    folder_image = pygame.image.load(os.path.join(IMAGES_PATH, "folder.png"))
-    gear_image = pygame.image.load(os.path.join(IMAGES_PATH, "engranaje.png"))
-    logo_image = pygame.image.load(os.path.join(IMAGES_PATH, "logo.png"))
-    salud_image = pygame.image.load(os.path.join(IMAGES_PATH, "Salud.png"))
+    power_image = pygame.image.load(os.path.join(ruta_imagenes, "Power.png"))
+    red_image = pygame.image.load(os.path.join(ruta_imagenes, "Red.png"))
+    folder_image = pygame.image.load(os.path.join(ruta_imagenes, "folder.png"))
+    gear_image = pygame.image.load(os.path.join(ruta_imagenes, "engranaje.png"))
+    logo_image = pygame.image.load(os.path.join(ruta_imagenes, "logo.png"))
+    salud_image = pygame.image.load(os.path.join(ruta_imagenes, "Salud.png"))  # Nueva imagen
 except pygame.error as e:
     print(f"Error al cargar imágenes: {e}")
     pygame.quit()
@@ -61,6 +57,14 @@ def calcular_botones(screen_size):
 
 button_center_1, button_center_2, button_radius_1, button_radius_2, rect_button_1, rect_button_2 = calcular_botones(screen_size)
 
+# Definir el rectángulo del cuadrado central (Salud)
+salud_rect = pygame.Rect(
+    573 + 2 * ((1348 - 573 - (20 * 4)) // 5 + 20),
+    906,
+    (1348 - 573 - (20 * 4)) // 5,
+    1020 - 906
+)
+
 def is_point_inside_circle(x, y, center, radius):
     return (x - center[0])**2 + (y - center[1])**2 <= radius**2
 
@@ -69,7 +73,7 @@ def is_point_inside_rect(x, y, rect):
 
 def open_firefox_gmail():
     try:
-        subprocess.Popen(["firefox", "google.com"])
+        subprocess.Popen(["firefox", "https://mail.google.com"])
     except FileNotFoundError:
         print("No se encontró Firefox. Por favor instálalo.")
 
@@ -86,7 +90,7 @@ def open_file_manager_linux():
 
 def go_to_login():
     def lanzar_login():
-        subprocess.Popen(["python3", USERS_SCRIPT_PATH])
+        subprocess.Popen(["python3", "users.py"])
         pygame.quit()
         sys.exit()
     threading.Timer(1.5, lanzar_login).start()
@@ -97,15 +101,20 @@ def open_terminal():
     except FileNotFoundError:
         print("No se encontró el terminal. Por favor instálalo.")
 
-def open_medical_app():
+# Nueva función para lanzar flujo Salud
+def launch_salud_workflow():
+    script = """
+    cd ~/Documentos/Interfaz\\ grafica\\ OS/MedicalAppointments/ || exit
+    python3 -m venv prueba
+    source prueba/bin/activate
+    python3 -m pip install -U pygame
+    python3 Inicio.py
+    exec bash
+    """
     try:
-        inicio_path = os.path.join(MEDICAL_APP_PATH, "Inicio.py")
-        if os.path.exists(inicio_path):
-            subprocess.Popen(["python3", inicio_path])
-        else:
-            print(f"No se encontró el archivo: {inicio_path}")
-    except Exception as e:
-        print(f"Error al abrir MedicalAppointments: {e}")
+        subprocess.Popen(["gnome-terminal", "--", "bash", "-c", script])
+    except FileNotFoundError:
+        print("No se pudo abrir la terminal. Asegúrate de tener gnome-terminal instalado.")
 
 menu_visible = False
 font = pygame.font.SysFont(None, int(screen_size[1] * 0.05))
@@ -157,7 +166,6 @@ def draw_menu():
 
 running = True
 clock = pygame.time.Clock()
-app_rects = []
 
 while running:
     for event in pygame.event.get():
@@ -175,6 +183,8 @@ while running:
             elif is_point_inside_rect(x, y, rect_button_2):
                 print("Botón de Engranaje presionado")
                 open_terminal()
+            elif salud_rect.collidepoint(x, y):
+                launch_salud_workflow()
             elif menu_visible:
                 for rect, option in menu_rects:
                     if rect.collidepoint(x, y):
@@ -182,10 +192,6 @@ while running:
                             running = False
                         elif option == "Ir al inicio de sesión":
                             go_to_login()
-            
-            for i, rect in enumerate(app_rects):
-                if rect.collidepoint(x, y) and i == 2:
-                    open_medical_app()
 
     screen.blit(background, (0, 0))
 
@@ -227,18 +233,14 @@ while running:
     available_width = rect_width - (separation * 4)
     square_width = available_width // 5
 
-    app_rects = []
-
     for i in range(5):
         square_x = rect_x + i * (square_width + separation)
         square_y = rect_y
-        rect = pygame.Rect(square_x, square_y, square_width, rect_height)
-        app_rects.append(rect)
         
-        if i == 2 and salud_image:
+        if i == 2 and salud_image:  # Cuadrado central con imagen
             salud_scaled = pygame.transform.scale(salud_image, (square_width, rect_height))
             screen.blit(salud_scaled, (square_x, square_y))
-        else:
+        else:  # Los otros 4 cuadrados azules
             pygame.draw.rect(screen, (0, 0, 255), (square_x, square_y, square_width, rect_height))
 
     pygame.display.flip()
